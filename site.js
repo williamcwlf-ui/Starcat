@@ -33,25 +33,16 @@ const route = name => new URL(name, siteRoot).pathname;
 const homeHref = siteRoot.pathname;
 
 document.title = page === "ownership" ? `Ownership | ${CONFIG.company}` : page === "groups" ? `Groups | ${CONFIG.company}` : CONFIG.company;
-const navStyles = document.createElement("style");
-navStyles.textContent = `
-header{position:sticky;top:0;z-index:10;background:rgba(10,16,48,.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff1a}
-nav a.groups-button{display:inline-block;padding:8px 18px;border:1px solid var(--gold);border-radius:999px;background:var(--gold);color:#1b1500!important;text-decoration:none}
-nav a.groups-button:hover,nav a.groups-button.on{background:#ffe08a;color:#1b1500!important;border-color:#ffe08a}
-`;
-document.head.appendChild(navStyles);
-
 const nav = document.querySelector("header nav") || document.querySelector("nav");
 if (nav) {
   const logo = CONFIG.logo
     ? `<img src="${CONFIG.logo}" alt="" style="height:22px;vertical-align:-4px;margin-right:8px">`
     : "★ ";
-  nav.innerHTML = `<a class="logo" href="${homeHref}">${logo}${CONFIG.company}</a>
-    <ul>
-      <li><a href="${homeHref}"${page === "home" ? ' class="on" aria-current="page"' : ""}>Home</a></li>
-      <li><a href="${route("ownership")}"${page === "ownership" ? ' class="on" aria-current="page"' : ""}>Ownership</a></li>
-      <li><a class="groups-button${page === "groups" ? " on" : ""}" href="${route("groups")}"${page === "groups" ? ' aria-current="page"' : ""}>Groups</a></li>
-    </ul>`;
+  nav.innerHTML = `<a class="logo" href="${homeHref}">${logo}${CONFIG.company}</a><ul>
+    <li><a href="${homeHref}"${page === "home" ? ' class="on" aria-current="page"' : ""}>Home</a></li>
+    <li><a href="${route("ownership")}"${page === "ownership" ? ' class="on" aria-current="page"' : ""}>Ownership</a></li>
+    <li><a href="${route("groups")}"${page === "groups" ? ' class="on" aria-current="page"' : ""}>Groups</a></li>
+  </ul>`;
 }
 const footer = document.querySelector("footer");
 if (footer) footer.innerHTML = `© ${new Date().getFullYear()} ${CONFIG.company} · <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
