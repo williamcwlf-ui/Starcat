@@ -1,6 +1,8 @@
 // ===== EDIT THIS PART =====
 const CONFIG = {
   company: "Your Company",
+  strapText: "",   // text printed on the lanyard strap (leave empty to use the company name)
+  logo: "",        // optional logo image, e.g. "images/logo.png" (white or transparent PNG looks best on the teal strap)
   tagline: "A short line about what you do.",
   about: "Write two sentences here about your company, who it serves and why it exists.",
   email: "hello@yourcompany.com",
@@ -69,7 +71,7 @@ document.head.appendChild(st);
 const here = location.pathname.endsWith("ownership.html") ? "own" : "home";
 document.title = here === "own" ? "Ownership | " + CONFIG.company : CONFIG.company;
 document.querySelector("nav").innerHTML =
-  `<a class="logo" href="index.html">★ ${CONFIG.company}</a><ul>
+  `<a class="logo" href="index.html">${CONFIG.logo ? `<img src="${CONFIG.logo}" alt="" style="height:22px;vertical-align:-4px;margin-right:8px">` : "★ "}${CONFIG.company}</a><ul>
    <li><a href="index.html" class="${here === "home" ? "on" : ""}">Home</a></li>
    <li><a href="ownership.html" class="${here === "own" ? "on" : ""}">Ownership</a></li></ul>`;
 document.querySelector("footer").innerHTML =
