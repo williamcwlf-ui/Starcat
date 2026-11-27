@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ownership</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<header><nav aria-label="Main"></nav></header>
+<main>
+  <div class="title">
+    <h1>The owners</h1>
+    <p>Drag a badge to swing it. Tap or click to flip it.</p>
+  </div>
+  <div class="rail" aria-hidden="true"></div>
+  <div class="lanyards" id="lanyards"></div>
+</main>
+<footer></footer>
+<script src="site.js"></script>
+<script>
+  const row = document.getElementById("lanyards");
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const items = [];
+
+  CONFIG.owners.forEach((o, i) => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    slot.innerHTML = `<div class="swing" tabindex="0" role="button" aria-label="Flip badge for ${o.name}">
+      <div class="strap"></div><div class="clip"></div>
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="hole"></div><div class="ph"></div><h2></h2><div class="role"></div><div class="co"></div></div>
+        <div class="face back"><h2></h2><p></p></div>
+      </div></div></div>`;
+    const front = slot.querySelector(".face"), back = slot.querySelector(".back");
+    front.querySelector("h2").textContent = o.name;
+    front.querySelector(".role").textContent = o.role;
+    front.querySelector(".co").textContent = CONFIG.company;
+    back.querySelector("h2").textContent = o.name;
+    back.querySelector("p").textContent = o.bio || "";
+
+    const ph = front.querySelector(".ph");
+    ph.className = "photo";
+    ph.textContent = o.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+    if (o.photo) {
+      const im = new Image();
+      im.className = "photo"; im.alt = o.name;
+      im.onload = () => ph.replaceWith(im);
+      im.src = o.photo;
+    }
+
+    const s = { slot, el: slot.querySelector(".swing"), flip: slot.querySelector(".flip"),
+      th: calm ? 0 : (i % 2 ? -1 : 1) * (.45 + Math.random() * .25), w: 0, ph: i * 1.7,
+      drag: false, moved: 0, target: 0 };
+    const pivot = () => { const r = slot.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top }; };
+
+    s.el.addEventListener("pointerdown", e => {
+      s.drag = true; s.moved = 0; s.sx = e.clientX; s.sy = e.clientY;
+      s.el.setPointerCapture(e.pointerId); slot.style.zIndex = 5;
+    });
+    s.el.addEventListener("pointermove", e => {
+      if (!s.drag) return;
+      s.moved = Math.max(s.moved, Math.hypot(e.clientX - s.sx, e.clientY - s.sy));
+      if (s.moved > 6) {
+        const p = pivot();
+        s.target = Math.max(-1.1, Math.min(1.1, Math.atan2(p.x - e.clientX, e.clientY - p.y)));
+      }
+    });
+    const up = () => {
+      if (!s.drag) return;
+      s.drag = false; slot.style.zIndex = "";
+      if (s.moved < 6) s.flip.classList.toggle("on");
+    };
+    s.el.addEventListener("pointerup", up);
+    s.el.addEventListener("pointercancel", up);
+    s.el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); s.flip.classList.toggle("on"); s.w += 2; }
+    });
+    row.appendChild(slot);
+    items.push(s);
+  });
+
+  let last = performance.now();
+  (function tick(now) {
+    const dt = Math.max(.001, Math.min(.033, (now - last) / 1000)); last = now;
+    for (const s of items) {
+      if (s.drag && s.moved > 6) {
+        const p = s.th;
+        s.th += (s.target - s.th) * Math.min(1, dt * 20);
+        s.w = (s.th - p) / dt;
+      } else if (!s.drag) {
+        const wind = calm ? 0 : .25 * Math.sin(now / 1100 + s.ph);
+        s.w += (-14 * Math.sin(s.th) - .35 * s.w + wind) * dt;
+        s.th += s.w * dt;
+      }
+      s.el.style.transform = `rotate(${s.th}rad)`;
+    }
+    requestAnimationFrame(tick);
+  })(performance.now());
+</script>
+</body>
+</html>
