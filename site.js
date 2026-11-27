@@ -19,6 +19,53 @@ const CONFIG = {
 };
 // ===== END EDIT =====
 
+const CSS = `
+:root{--night:#0a1030;--deep:#17275e;--ink:#f1f3ff;--mute:#a8b3de;--gold:#ffcf5c;--serif:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);line-height:1.6;min-height:100vh;overflow-x:hidden;
+background:radial-gradient(1100px 650px at 75% -10%,var(--deep),transparent 65%),var(--night);background-attachment:fixed}
+#stars{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
+header{position:sticky;top:0;z-index:10;background:rgba(10,16,48,.72);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff1a}
+main,footer{position:relative;z-index:1}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 6vw}
+.logo{font:700 1.35rem var(--serif);color:var(--ink);text-decoration:none}
+nav ul{display:flex;gap:26px;list-style:none;padding:0}
+nav a:not(.logo){color:var(--mute);text-decoration:none;font-weight:600;padding:4px 0;border-bottom:2px solid transparent}
+nav a:not(.logo):hover,nav a.on{color:var(--ink);border-color:var(--gold)}
+a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.hero{min-height:68vh;display:grid;place-content:center;gap:20px;padding:60px 6vw}
+.hero h1{font:700 clamp(2.6rem,8vw,5.6rem)/1.02 var(--serif);max-width:12ch}
+.hero p{max-width:52ch;color:var(--mute);font-size:1.15rem}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--gold);color:#1b1500;font-weight:700;text-decoration:none}
+.btn.ghost{background:none;color:var(--ink);border:1px solid #ffffff55}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:36px;padding:10px 6vw 80px;max-width:1100px}
+.list div{border-top:2px solid var(--gold);padding-top:14px}
+.list h3{font:700 1.3rem var(--serif);margin-bottom:6px}
+.list p{color:var(--mute)}
+footer{padding:28px 6vw;color:var(--mute);border-top:1px solid #ffffff1a}
+footer a{color:var(--gold)}
+.title{padding:34px 6vw 0}
+.title h1{font:700 clamp(2.2rem,6vw,3.6rem)/1.1 var(--serif)}
+.title p{color:var(--mute);margin-top:6px}
+.flip{perspective:900px;width:210px;height:290px}
+.inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;left:0;top:0;right:0;bottom:0;border-radius:16px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;padding:20px 16px;text-align:center;background:linear-gradient(160deg,#fff,#dde4ff);color:#12183a;box-shadow:0 18px 40px #000a}
+.face.back{transform:rotateY(180deg);justify-content:center;background:linear-gradient(160deg,#1f2f6b,#0f1a3d);color:var(--ink)}
+.hole{width:46px;height:7px;border-radius:4px;background:#0a1030;margin-bottom:14px}
+.photo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);background:#c8d2ff;display:grid;place-items:center;font:700 2rem var(--serif);color:#34429a}
+.face h2{margin-top:14px;font:700 1.3rem var(--serif)}
+.role{color:#3f50bd;font-weight:700;font-size:.92rem}
+.co{margin-top:auto;font-size:.8rem;color:#6a76b3}
+.back p{color:#d0d8ff}
+.clip{width:34px;height:26px;border-radius:6px 6px 14px 14px;background:linear-gradient(#eef1ff,#8f9ac4)}
+@media(max-width:560px){nav{flex-direction:column}}
+`;
+const st = document.createElement("style");
+st.textContent = CSS;
+document.head.appendChild(st);
+
 const here = location.pathname.endsWith("ownership.html") ? "own" : "home";
 document.title = here === "own" ? "Ownership | " + CONFIG.company : CONFIG.company;
 document.querySelector("nav").innerHTML =
