@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ownership</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.stage{position:relative;margin:34px 0 60px}
+#rope{position:absolute;left:0;top:0;pointer-events:none;z-index:1}
+.bar{position:absolute;left:2%;right:2%;height:10px;border-radius:6px;background:linear-gradient(90deg,#3d4a7d,#9fb0f0,#3d4a7d);box-shadow:0 6px 22px #0009;z-index:3}
+.badge{position:absolute;left:0;top:0;width:210px;transform-origin:50% 0;cursor:grab;touch-action:none;user-select:none;z-index:2;will-change:transform}
+.badge:active{cursor:grabbing}
+.badge:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:16px}
+.badge .flip{margin:0}
+.badge .clip{position:absolute;top:-18px;left:calc(50% - 17px);margin:0;z-index:3}
+</style>
 </head>
 <body>
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -12,92 +22,134 @@
 <main>
   <div class="title">
     <h1>The owners</h1>
-    <p>Drag a badge to swing it. Tap or click to flip it.</p>
+    <p>Grab a badge and swing it around. Tap it to flip it.</p>
   </div>
-  <div class="rail" aria-hidden="true"></div>
-  <div class="lanyards" id="lanyards"></div>
+  <div class="stage" id="stage"><svg id="rope" aria-hidden="true"></svg></div>
 </main>
 <footer></footer>
 <script src="site.js"></script>
 <script>
-  const row = document.getElementById("lanyards");
-  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const items = [];
+if (typeof CONFIG === "undefined") {
+  document.querySelector("main").insertAdjacentHTML("beforeend", "<p style='padding:6vw'>site.js did not load. Put site.js in the same folder as this page.</p>");
+  throw new Error("site.js missing");
+}
+const stage = document.getElementById("stage"), svg = document.getElementById("rope");
+const NS = "http://www.w3.org/2000/svg";
+const N = 7, L = 24, H = 290, BW = 210, ROW = N * L + H + 70, G = 2300, DT = 1 / 60;
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let W = 0, rows = 1;
+const items = [];
 
-  CONFIG.owners.forEach((o, i) => {
-    const slot = document.createElement("div");
-    slot.className = "slot";
-    slot.innerHTML = `<div class="swing" tabindex="0" role="button" aria-label="Flip badge for ${o.name}">
-      <div class="strap"></div><div class="clip"></div>
-      <div class="flip"><div class="inner">
-        <div class="face"><div class="hole"></div><div class="ph"></div><h2></h2><div class="role"></div><div class="co"></div></div>
-        <div class="face back"><h2></h2><p></p></div>
-      </div></div></div>`;
-    const front = slot.querySelector(".face"), back = slot.querySelector(".back");
-    front.querySelector("h2").textContent = o.name;
-    front.querySelector(".role").textContent = o.role;
-    front.querySelector(".co").textContent = CONFIG.company;
-    back.querySelector("h2").textContent = o.name;
-    back.querySelector("p").textContent = o.bio || "";
+CONFIG.owners.forEach((o, i) => {
+  const el = document.createElement("div");
+  el.className = "badge"; el.tabIndex = 0; el.setAttribute("role", "button");
+  el.setAttribute("aria-label", "Flip badge for " + o.name);
+  el.innerHTML = `<div class="clip"></div><div class="flip"><div class="inner">
+    <div class="face"><div class="hole"></div><div class="ph"></div><h2></h2><div class="role"></div><div class="co"></div></div>
+    <div class="face back"><h2></h2><p></p></div></div></div>`;
+  const front = el.querySelector(".face"), back = el.querySelector(".back");
+  front.querySelector("h2").textContent = o.name;
+  front.querySelector(".role").textContent = o.role;
+  front.querySelector(".co").textContent = CONFIG.company;
+  back.querySelector("h2").textContent = o.name;
+  back.querySelector("p").textContent = o.bio || "";
+  const ph = front.querySelector(".ph");
+  ph.className = "photo";
+  ph.textContent = o.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+  if (o.photo) { const im = new Image(); im.className = "photo"; im.alt = o.name; im.onload = () => ph.replaceWith(im); im.src = o.photo; }
 
-    const ph = front.querySelector(".ph");
-    ph.className = "photo";
-    ph.textContent = o.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
-    if (o.photo) {
-      const im = new Image();
-      im.className = "photo"; im.alt = o.name;
-      im.onload = () => ph.replaceWith(im);
-      im.src = o.photo;
-    }
+  const mk = (stroke, extra) => { const p = document.createElementNS(NS, "path");
+    p.setAttribute("fill", "none"); p.setAttribute("stroke", stroke); p.setAttribute("stroke-width", 18);
+    p.setAttribute("stroke-linejoin", "round"); if (extra) p.setAttribute("stroke-dasharray", extra); svg.appendChild(p); return p; };
+  const s = { i, el, flip: el.querySelector(".flip"), p1: mk("#ffcf5c"), p2: mk("rgba(0,0,0,.2)", "10 10"), drag: null, P: [], px: 0, py: 0 };
 
-    const s = { slot, el: slot.querySelector(".swing"), flip: slot.querySelector(".flip"),
-      th: calm ? 0 : (i % 2 ? -1 : 1) * (.45 + Math.random() * .25), w: 0, ph: i * 1.7,
-      drag: false, moved: 0, target: 0 };
-    const pivot = () => { const r = slot.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top }; };
-
-    s.el.addEventListener("pointerdown", e => {
-      s.drag = true; s.moved = 0; s.sx = e.clientX; s.sy = e.clientY;
-      s.el.setPointerCapture(e.pointerId); slot.style.zIndex = 5;
-    });
-    s.el.addEventListener("pointermove", e => {
-      if (!s.drag) return;
-      s.moved = Math.max(s.moved, Math.hypot(e.clientX - s.sx, e.clientY - s.sy));
-      if (s.moved > 6) {
-        const p = pivot();
-        s.target = Math.max(-1.1, Math.min(1.1, Math.atan2(p.x - e.clientX, e.clientY - p.y)));
-      }
-    });
-    const up = () => {
-      if (!s.drag) return;
-      s.drag = false; slot.style.zIndex = "";
-      if (s.moved < 6) s.flip.classList.toggle("on");
-    };
-    s.el.addEventListener("pointerup", up);
-    s.el.addEventListener("pointercancel", up);
-    s.el.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); s.flip.classList.toggle("on"); s.w += 2; }
-    });
-    row.appendChild(slot);
-    items.push(s);
+  el.addEventListener("pointerdown", e => {
+    const r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    const T = s.P[N], B = s.P[N + 1], ax = B.x - T.x, ay = B.y - T.y;
+    const u = Math.max(0, Math.min(1, ((x - T.x) * ax + (y - T.y) * ay) / (ax * ax + ay * ay)));
+    s.drag = { x, y, u, sx: x, sy: y, moved: 0 };
+    el.setPointerCapture(e.pointerId); el.style.zIndex = 5;
   });
+  el.addEventListener("pointermove", e => {
+    if (!s.drag) return;
+    const r = stage.getBoundingClientRect();
+    s.drag.x = e.clientX - r.left; s.drag.y = e.clientY - r.top;
+    s.drag.moved = Math.max(s.drag.moved, Math.hypot(s.drag.x - s.drag.sx, s.drag.y - s.drag.sy));
+  });
+  const up = () => { if (!s.drag) return; if (s.drag.moved < 6) s.flip.classList.toggle("on"); s.drag = null; el.style.zIndex = ""; };
+  el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+  el.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); s.flip.classList.toggle("on"); s.P[N + 1].ox -= 12; }
+  });
+  stage.appendChild(el); items.push(s);
+});
 
-  let last = performance.now();
-  (function tick(now) {
-    const dt = Math.max(.001, Math.min(.033, (now - last) / 1000)); last = now;
-    for (const s of items) {
-      if (s.drag && s.moved > 6) {
-        const p = s.th;
-        s.th += (s.target - s.th) * Math.min(1, dt * 20);
-        s.w = (s.th - p) / dt;
-      } else if (!s.drag) {
-        const wind = calm ? 0 : .25 * Math.sin(now / 1100 + s.ph);
-        s.w += (-14 * Math.sin(s.th) - .35 * s.w + wind) * dt;
-        s.th += s.w * dt;
-      }
-      s.el.style.transform = `rotate(${s.th}rad)`;
+function layout() {
+  W = stage.getBoundingClientRect().width;
+  const cols = W >= BW * 4 + 60 ? 4 : W >= BW * 2 + 40 ? 2 : 1;
+  rows = Math.ceil(items.length / cols);
+  stage.style.height = rows * ROW + "px";
+  svg.setAttribute("width", W); svg.setAttribute("height", rows * ROW);
+  stage.querySelectorAll(".bar").forEach(b => b.remove());
+  for (let r = 0; r < rows; r++) { const b = document.createElement("div"); b.className = "bar"; b.style.top = r * ROW - 5 + "px"; stage.appendChild(b); }
+  items.forEach((s, i) => {
+    s.px = W * ((i % cols) + .5) / cols; s.py = Math.floor(i / cols) * ROW;
+    const kick = calm ? 0 : (i % 2 ? -1 : 1) * 7;
+    s.P = [];
+    for (let k = 0; k <= N + 1; k++) {
+      const y = k <= N ? s.py + k * L : s.py + N * L + H;
+      s.P.push({ x: s.px, y, ox: s.px - kick * k / (N + 1), oy: y, w: k === 0 ? 0 : k < N ? 1 : .5 });
     }
-    requestAnimationFrame(tick);
-  })(performance.now());
+  });
+}
+
+function solve(a, b, len) {
+  const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1e-6, f = (d - len) / d, ws = a.w + b.w;
+  if (!ws) return;
+  a.x += dx * f * a.w / ws; a.y += dy * f * a.w / ws; b.x -= dx * f * b.w / ws; b.y -= dy * f * b.w / ws;
+}
+
+function step() {
+  for (const s of items) {
+    const P = s.P;
+    for (let k = 1; k < P.length; k++) {
+      const p = P[k]; let vx = (p.x - p.ox) * .997, vy = (p.y - p.oy) * .997;
+      const v = Math.hypot(vx, vy); if (v > 60) { vx *= 60 / v; vy *= 60 / v; }
+      p.ox = p.x; p.oy = p.y; p.x += vx; p.y += vy + G * DT * DT;
+    }
+    for (let it = 0; it < 14; it++) {
+      for (let k = 0; k < P.length - 1; k++) solve(P[k], P[k + 1], k < N ? L : H);
+      if (s.drag) {
+        const T = P[N], B = P[N + 1], u = s.drag.u, reach = N * L + H * u - 2;
+        let tx = s.drag.x - s.px, ty = s.drag.y - s.py; const dd = Math.hypot(tx, ty);
+        if (dd > reach) { tx *= reach / dd; ty *= reach / dd; }
+        const dx = (s.px + tx - (T.x + (B.x - T.x) * u)) * .5, dy = (s.py + ty - (T.y + (B.y - T.y) * u)) * .5;
+        T.x += dx * (1 - u); T.y += dy * (1 - u); B.x += dx * u; B.y += dy * u;
+      }
+    }
+    for (let k = 1; k < P.length; k++) {
+      P[k].x = Math.max(10, Math.min(W - 10, P[k].x));
+      P[k].y = Math.min(rows * ROW - 10, P[k].y);
+    }
+  }
+}
+
+function draw() {
+  for (const s of items) {
+    const P = s.P, T = P[N], B = P[N + 1], a = Math.atan2(-(B.x - T.x), B.y - T.y);
+    s.el.style.transform = `translate(${T.x - BW / 2}px,${T.y}px) rotate(${a}rad)`;
+    const d = P.slice(0, N + 1).map((p, k) => (k ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1)).join("");
+    s.p1.setAttribute("d", d); s.p2.setAttribute("d", d);
+  }
+}
+
+let acc = 0, last = performance.now();
+function tick(now) {
+  acc += Math.min(.05, (now - last) / 1000); last = now;
+  while (acc >= DT) { step(); acc -= DT; }
+  draw(); requestAnimationFrame(tick);
+}
+layout(); addEventListener("resize", layout); requestAnimationFrame(tick);
 </script>
 </body>
 </html>
