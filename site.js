@@ -11,6 +11,11 @@ const CONFIG = {
     { title: "Who we help", text: "Describe the customers you work with." },
     { title: "How we work", text: "Describe what makes your approach different." }
   ],
+    groups: [
+    { title: "Group One",   subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" },
+    { title: "Group Two",   subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" },
+    { title: "Group Three", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" }
+  ],
   // Put the 4 photos in an "images" folder next to these files.
   owners: [
     { name: "William Lumen",   role: "Ceo", photo: "images/owner1.jpg", bio: "William is the heart of this Company" },
@@ -19,7 +24,6 @@ const CONFIG = {
     { name: "Owner Four",  role: "Co-owner", photo: "images/owner4.jpg", bio: "A short line about this owner." }
   ]
 };
-// ===== END EDIT =====
 
 const CSS = `
 :root{--night:#0a1030;--deep:#17275e;--ink:#f1f3ff;--mute:#a8b3de;--gold:#ffcf5c;--serif:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif}
@@ -68,12 +72,13 @@ const st = document.createElement("style");
 st.textContent = CSS;
 document.head.appendChild(st);
 
-const here = location.pathname.endsWith("ownership.html") ? "own" : "home";
-document.title = here === "own" ? "Ownership | " + CONFIG.company : CONFIG.company;
+const here = location.pathname.endsWith("ownership.html") ? "own" : location.pathname.endsWith("groups.html") ? "groups" : "home";
+document.title = here === "own" ? "Ownership | " + CONFIG.company : here === "groups" ? "Groups | " + CONFIG.company : CONFIG.company;
 document.querySelector("nav").innerHTML =
   `<a class="logo" href="index.html">${CONFIG.logo ? `<img src="${CONFIG.logo}" alt="" style="height:22px;vertical-align:-4px;margin-right:8px">` : "★ "}${CONFIG.company}</a><ul>
    <li><a href="index.html" class="${here === "home" ? "on" : ""}">Home</a></li>
-   <li><a href="ownership.html" class="${here === "own" ? "on" : ""}">Ownership</a></li></ul>`;
+   <li><a href="ownership.html" class="${here === "own" ? "on" : ""}">Ownership</a></li>
+   <li><a href="groups.html" class="${here === "groups" ? "on" : ""}">Groups</a></li></ul>`;
 document.querySelector("footer").innerHTML =
   `© ${new Date().getFullYear()} ${CONFIG.company} · <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
 
