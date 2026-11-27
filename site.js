@@ -84,7 +84,7 @@ if (footer) footer.innerHTML = `© ${new Date().getFullYear()} ${CONFIG.company}
       star.x = (star.x + width + 20) % (width + 20);
       star.y = (star.y + height + 20) % (height + 20);
       context.globalAlpha = .45 + .55 * Math.abs(Math.sin(star.phase));
-      context.fillStyle = star.gold ? "#ffcf5c" : "#fff";
+      context.fillStyle = star.gold ? "#68a9ed" : "#fff";
       if (star.gold) drawSpark(star.x, star.y, star.r * 2.5, star.phase * .3);
       else { context.beginPath(); context.arc(star.x, star.y, star.r, 0, 6.283); context.fill(); }
     }
