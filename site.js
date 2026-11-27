@@ -1,8 +1,8 @@
 // ===== EDIT THIS PART =====
 const CONFIG = {
   company: "Your Company",
-  strapText: "",   // text printed on the lanyard strap (leave empty to use the company name)
-  logo: "",        // optional logo image, e.g. "images/logo.png" (white or transparent PNG looks best on the teal strap)
+  strapText: "Starcat",   // text printed on the lanyard strap (leave empty to use the company name)
+  logo: "images/logo.png",        // optional logo image, e.g. "images/logo.png" (white or transparent PNG looks best on the teal strap)
   tagline: "A short line about what you do.",
   about: "Write two sentences here about your company, who it serves and why it exists.",
   email: "hello@yourcompany.com",
@@ -13,7 +13,7 @@ const CONFIG = {
   ],
   // Put the 4 photos in an "images" folder next to these files.
   owners: [
-    { name: "Owner One",   role: "Co-owner", photo: "images/owner1.jpg", bio: "A short line about this owner." },
+    { name: "William Lumen",   role: "Ceo", photo: "images/owner1.jpg", bio: "William is the heart of this Company" },
     { name: "Owner Two",   role: "Co-owner", photo: "images/owner2.jpg", bio: "A short line about this owner." },
     { name: "Owner Three", role: "Co-owner", photo: "images/owner3.jpg", bio: "A short line about this owner." },
     { name: "Owner Four",  role: "Co-owner", photo: "images/owner4.jpg", bio: "A short line about this owner." }
