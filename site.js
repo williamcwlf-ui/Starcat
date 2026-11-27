@@ -24,14 +24,13 @@ const CONFIG = {
   ]
 };
 
-// Keep extensionless links working both at the domain root and under a GitHub Pages project path.
-const pathname = location.pathname;
-const pageMatch = pathname.match(/(?:^|\/)(groups|ownership)(?:\.html)?\/?$/);
-const page = pageMatch ? pageMatch[1] : "home";
-const basePath = pathname
-  .replace(/(?:index\.html|groups(?:\.html)?|ownership(?:\.html)?)\/?$/, "")
-  .replace(/\/?$/, "/");
-const pageUrl = name => `${basePath}${name}`;
+// Find the current page and the site root (including GitHub Pages project sites).
+const pathname = location.pathname.replace(/\/+$/, "");
+const page = /(?:^|\/)groups(?:\.html)?$/.test(pathname) ? "groups"
+  : /(?:^|\/)ownership(?:\.html)?$/.test(pathname) ? "ownership" : "home";
+const siteRoot = new URL("./", location.href);
+const route = name => new URL(name, siteRoot).pathname;
+const homeHref = siteRoot.pathname;
 
 document.title = page === "ownership" ? `Ownership | ${CONFIG.company}` : page === "groups" ? `Groups | ${CONFIG.company}` : CONFIG.company;
 const navStyles = document.createElement("style");
@@ -41,13 +40,18 @@ nav a.groups-button{display:inline-block;padding:8px 18px;border:1px solid var(-
 nav a.groups-button:hover,nav a.groups-button.on{background:#ffe08a;color:#1b1500!important;border-color:#ffe08a}
 `;
 document.head.appendChild(navStyles);
-const nav = document.querySelector("nav");
+
+const nav = document.querySelector("header nav") || document.querySelector("nav");
 if (nav) {
-  nav.innerHTML = `<a class="logo" href="${basePath}">${CONFIG.logo ? `<img src="${CONFIG.logo}" alt="" style="height:22px;vertical-align:-4px;margin-right:8px">` : "★ "}${CONFIG.company}</a><ul>
-    <li><a href="${basePath}" class="${page === "home" ? "on" : ""}">Home</a></li>
-    <li><a href="${pageUrl("ownership")}" class="${page === "ownership" ? "on" : ""}">Ownership</a></li>
-    <li><a href="${pageUrl("groups")}" class="groups-button ${page === "groups" ? "on" : ""}"${page === "groups" ? ' aria-current="page"' : ""}>Groups</a></li>
-  </ul>`;
+  const logo = CONFIG.logo
+    ? `<img src="${CONFIG.logo}" alt="" style="height:22px;vertical-align:-4px;margin-right:8px">`
+    : "★ ";
+  nav.innerHTML = `<a class="logo" href="${homeHref}">${logo}${CONFIG.company}</a>
+    <ul>
+      <li><a href="${homeHref}"${page === "home" ? ' class="on" aria-current="page"' : ""}>Home</a></li>
+      <li><a href="${route("ownership")}"${page === "ownership" ? ' class="on" aria-current="page"' : ""}>Ownership</a></li>
+      <li><a class="groups-button${page === "groups" ? " on" : ""}" href="${route("groups")}"${page === "groups" ? ' aria-current="page"' : ""}>Groups</a></li>
+    </ul>`;
 }
 const footer = document.querySelector("footer");
 if (footer) footer.innerHTML = `© ${new Date().getFullYear()} ${CONFIG.company} · <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
