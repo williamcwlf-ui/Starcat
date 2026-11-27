@@ -17,8 +17,8 @@ const CONFIG = {
     { title: "Group Three", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" }
   ],
   owners: [
-    { name: "William Lumen", role: "Ceo", photo: "images/owner1.jpg", bio: "William is the heart of this Company" },
-    { name: "Owner Two", role: "Co-owner", photo: "images/owner2.jpg", bio: "A short line about this owner." },
+    { name: "William Lumen", role: "CEO", photo: "images/owner1.jpg", bio: "William is the heart of this Company" },
+    { name: "Noah", role: "Owner", photo: "images/owner2.jpg", bio: "Noah has been here since the Start." },
     { name: "Owner Three", role: "Co-owner", photo: "images/owner3.jpg", bio: "A short line about this owner." },
     { name: "Owner Four", role: "Co-owner", photo: "images/owner4.jpg", bio: "A short line about this owner." }
   ]
