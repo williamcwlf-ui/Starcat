@@ -1,10 +1,10 @@
 // ===== EDIT THIS PART =====
 const CONFIG = {
-  company: "Your Company",
+  company: "Starcat",
   strapText: "Starcat", // text printed on the lanyard strap
   logo: "images/logo.png",
-  tagline: "A short line about what you do.",
-  about: "Write two sentences here about your company, who it serves and why it exists.",
+  tagline: "A UK Company.",
+  about: "We do it cause we can.",
   email: "hello@yourcompany.com",
   services: [
     { title: "What we make", text: "Describe your first product or service." },
@@ -12,7 +12,7 @@ const CONFIG = {
     { title: "How we work", text: "Describe what makes your approach different." }
   ],
   groups: [
-    { title: "Group One", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" },
+    { title: "CLOR", subtitle: "CL (Clarance Studios) OR (Oreo Studios) is a muti studio.", link: "https://example.com", logo: "https://tr.rbxcdn.com/180DAY-d018cd4377107a91c0bafec33270bafd/150/150/Image/Webp/noFilter", banner: "https://tr.rbxcdn.com/180DAY-b319c911086747a2c3cdc0fb4f57d766/1440/456/Image/Png/noFilter" },
     { title: "Group Two", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" },
     { title: "Group Three", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" }
   ],
