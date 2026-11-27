@@ -1,7 +1,7 @@
 // ===== EDIT THIS PART =====
 const CONFIG = {
-  company: "Starcat",
-  strapText: "Starcat", // text printed on the lanyard strap
+  company: "Staraxy",
+  strapText: "Staraxy", // text printed on the lanyard strap
   logo: "images/logo.png",
   tagline: "A UK Company.",
   about: "We do it cause we can.",
@@ -12,8 +12,8 @@ const CONFIG = {
     { title: "How we work", text: "Describe what makes your approach different." }
   ],
   groups: [
-    { title: "CLOR", subtitle: "CL (Clarance Studios) OR (Oreo Studios) is a muti studio.", link: "https://example.com", logo: "https://tr.rbxcdn.com/180DAY-d018cd4377107a91c0bafec33270bafd/150/150/Image/Webp/noFilter", banner: "https://tr.rbxcdn.com/180DAY-b319c911086747a2c3cdc0fb4f57d766/1440/456/Image/Png/noFilter" },
-    { title: "Onestud", subtitle: "OneStud is a roblox airline.", link: "https://onestud.cc.cd/", logo: "images/1studshort.jpg", banner: "images/plen.jpg" },
+    { title: "Starcat", subtitle: "Starcat is Galxeydogs siter company", link: "https://example.com", logo: "images/logo.png", banner: "images/bannerlogo.png" },
+    { title: "Galaxydog", subtitle: "is Starcat siter company", link: "https://onestud.cc.cd/", logo: "images/logoaxy.png", banner: "images/logoabanner.png" },
     { title: "Group Three", subtitle: "A short description of what this group does and who it is for.", link: "https://example.com", logo: "", banner: "" }
   ],
   owners: [
