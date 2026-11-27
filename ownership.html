@@ -85,7 +85,9 @@ CONFIG.owners.forEach((o, i) => {
 });
 
 function layout() {
-  W = stage.getBoundingClientRect().width;
+  const w = stage.clientWidth || document.documentElement.clientWidth;
+  if (W && Math.abs(w - W) < 1) return;
+  W = w;
   const cols = W >= BW * 4 + 60 ? 4 : W >= BW * 2 + 40 ? 2 : 1;
   rows = Math.ceil(items.length / cols);
   stage.style.height = rows * ROW + "px";
@@ -149,7 +151,9 @@ function tick(now) {
   while (acc >= DT) { step(); acc -= DT; }
   draw(); requestAnimationFrame(tick);
 }
-layout(); addEventListener("resize", layout); requestAnimationFrame(tick);
+layout(); addEventListener("resize", layout); addEventListener("load", layout);
+if (window.ResizeObserver) new ResizeObserver(layout).observe(stage);
+requestAnimationFrame(tick);
 </script>
 </body>
 </html>
