@@ -4,156 +4,156 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ownership</title>
-<link rel="stylesheet" href="style.css">
 <style>
-.stage{position:relative;margin:34px 0 60px}
-#rope{position:absolute;left:0;top:0;pointer-events:none;z-index:1}
-.bar{position:absolute;left:2%;right:2%;height:10px;border-radius:6px;background:linear-gradient(90deg,#3d4a7d,#9fb0f0,#3d4a7d);box-shadow:0 6px 22px #0009;z-index:3}
-.badge{position:absolute;left:0;top:0;width:210px;transform-origin:50% 0;cursor:grab;touch-action:none;user-select:none;z-index:2;will-change:transform}
-.badge:active{cursor:grabbing}
-.badge:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:16px}
-.badge .flip{margin:0}
-.badge .clip{position:absolute;top:-18px;left:calc(50% - 17px);margin:0;z-index:3}
+:root{--teal:#14a08f;--mute:#666}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#111;background:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:focus-visible,.pend:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.bar{max-width:1128px;margin:0 auto;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.mark{width:18px;height:18px;border-radius:50%;border:4px solid var(--teal);border-right-color:transparent;display:block}
+nav{display:flex;align-items:center;gap:4px;font-size:14px;color:#555}
+nav a{padding:7px 10px;border-radius:8px}
+nav a:hover{color:#000}
+nav a.on{background:#f2f2f2;color:#000}
+nav a.dark{background:#0d0d0d;color:#fff;margin-left:6px;padding:7px 12px;font-weight:600}
+.intro{padding:92px 20px 26px}
+.narrow{max-width:560px;margin:0 auto}
+small{display:block;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#777;margin-bottom:10px}
+h1{font-size:40px;font-weight:500;letter-spacing:-.025em;line-height:1.15}
+.intro p{color:var(--mute);margin-top:10px;font-size:15px}
+.board{background:#f2f2f2;overflow:hidden}
+.cols{max-width:1088px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.slot{position:relative;height:700px}
+.pend{position:absolute;left:50%;top:0;width:0;height:0;transform-origin:0 0;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+.pend:active{cursor:grabbing}
+.strap{position:absolute;left:-27px;top:-500px;width:54px;height:840px;overflow:hidden;display:flex;flex-direction:column-reverse;align-items:center;gap:14px;padding-bottom:10px;color:#fff;
+background:repeating-linear-gradient(90deg,#ffffff14 0 2px,transparent 2px 4px),linear-gradient(90deg,#0f8d7e,#19ab98 20%,#19ab98 80%,#0f8d7e)}
+.strap>*{flex:none}
+.strap b{writing-mode:vertical-rl;transform:rotate(180deg);font-size:19px;font-weight:600;white-space:nowrap}
+.strap i{width:22px;height:22px;border-radius:50%;border:5px solid #fff;border-right-color:transparent}
+.card{position:absolute;left:-112px;top:330px;width:224px;height:308px;perspective:1000px}
+.in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.card.on .in{transform:rotateY(180deg)}
+.face{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:24px;overflow:hidden;background:#fff;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 10px 30px #0000001a,0 0 0 1px #0000000a}
+.band{height:96px;background:linear-gradient(135deg,#21b8a4,#0e8f82);position:relative;overflow:hidden}
+.band::after{content:"";position:absolute;right:-34px;top:22px;width:120px;height:120px;border-radius:50%;background:#ffffff1f}
+.slit{position:absolute;left:50%;top:13px;width:46px;height:8px;margin-left:-23px;border-radius:5px;background:#0a6b61;z-index:1}
+.av{position:absolute;left:50%;top:44px;width:104px;height:104px;margin-left:-52px;border-radius:50%;border:4px solid #fff;object-fit:cover;background:#c7f0e9;color:#0e8f82;font-weight:700;font-size:28px;display:grid;place-items:center;box-shadow:0 2px 8px #0003}
+.name{position:absolute;left:0;right:0;top:160px;text-align:center;font-size:17px;font-weight:600;color:var(--teal);padding:0 10px}
+.role{position:absolute;left:0;right:0;top:186px;text-align:center;font-size:13px;color:#222;padding:0 10px}
+.codebox{position:absolute;left:0;right:0;bottom:0;height:84px;background:#f6f6f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.pid{font:10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;color:#999}
+.back{transform:rotateY(180deg);background:linear-gradient(160deg,#1fb5a1,#0c7d71);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:28px;gap:10px}
+.back h3{font-size:18px;font-weight:600}
+.back p{font-size:14px;line-height:1.5;color:#e6fffb}
+.back .pid{color:#b9efe7}
+footer{background:#f2f2f2;color:#888;font-size:13px;text-align:center;padding:10px 20px 30px}
+footer a{text-decoration:underline}
+@media(max-width:1000px){.cols{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.cols{grid-template-columns:1fr}.intro{padding-top:56px}h1{font-size:34px}}
 </style>
 </head>
 <body>
-<canvas id="stars" aria-hidden="true"></canvas>
-<header><nav aria-label="Main"></nav></header>
-<main>
-  <div class="title">
-    <h1>The owners</h1>
-    <p>Grab a badge and swing it around. Tap it to flip it.</p>
-  </div>
-  <div class="stage" id="stage"><svg id="rope" aria-hidden="true"></svg></div>
-</main>
-<footer></footer>
-<script src="site.js"></script>
+<header><div class="bar">
+  <a class="brand" href="index.html"><i class="mark"></i><span id="brand"></span></a>
+  <nav><a href="index.html">Home</a><a href="ownership.html" class="on">Ownership</a><a class="dark" id="mail">Email us</a></nav>
+</div></header>
+<section class="intro"><div class="narrow">
+  <small>Company</small><h1>Ownership</h1><p id="sub"></p>
+</div></section>
+<section class="board"><div class="cols" id="cols"></div></section>
+<footer id="foot"></footer>
 <script>
-if (typeof CONFIG === "undefined") {
-  document.querySelector("main").insertAdjacentHTML("beforeend", "<p style='padding:6vw'>site.js did not load. Put site.js in the same folder as this page.</p>");
-  throw new Error("site.js missing");
-}
-const stage = document.getElementById("stage"), svg = document.getElementById("rope");
-const NS = "http://www.w3.org/2000/svg";
-const N = 7, L = 24, H = 290, BW = 210, ROW = N * L + H + 70, G = 2300, DT = 1 / 60;
+// ===== EDIT THIS PART =====
+const CONFIG = {
+  company: "Your Company",
+  email: "hello@yourcompany.com",
+  // Put the 4 photos in an "images" folder next to this file.
+  owners: [
+    { name: "Owner One",   role: "Co-owner", photo: "images/owner1.jpg", bio: "A short line about this owner." },
+    { name: "Owner Two",   role: "Co-owner", photo: "images/owner2.jpg", bio: "A short line about this owner." },
+    { name: "Owner Three", role: "Co-owner", photo: "images/owner3.jpg", bio: "A short line about this owner." },
+    { name: "Owner Four",  role: "Co-owner", photo: "images/owner4.jpg", bio: "A short line about this owner." }
+  ]
+};
+// ===== END EDIT =====
+
 const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let W = 0, rows = 1;
-const items = [];
+const prefix = (CONFIG.company.split(/\s+/).map(w => w[0]).join("").toUpperCase().slice(0, 3)) || "ID";
+document.title = "Ownership | " + CONFIG.company;
+document.getElementById("brand").textContent = CONFIG.company;
+document.getElementById("sub").textContent = "The people who run " + CONFIG.company + ".";
+document.getElementById("mail").href = "mailto:" + CONFIG.email;
+document.getElementById("foot").innerHTML = "© " + new Date().getFullYear() + " " + CONFIG.company + " · <a href='mailto:" + CONFIG.email + "'>" + CONFIG.email + "</a>";
 
+function barcode(seed) {
+  let h = 7; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const r = () => (h = (h * 1664525 + 1013904223) >>> 0) / 4294967296;
+  let x = 0, out = "";
+  while (x < 158) { const w = 1 + Math.floor(r() * 3); out += `<rect x="${x}" width="${w}" height="28"/>`; x += w + 1 + Math.floor(r() * 2); }
+  return `<svg viewBox="0 0 160 28" width="160" height="28" fill="#111" aria-hidden="true">${out}</svg>`;
+}
+
+const cols = document.getElementById("cols"), items = [];
 CONFIG.owners.forEach((o, i) => {
-  const el = document.createElement("div");
-  el.className = "badge"; el.tabIndex = 0; el.setAttribute("role", "button");
+  const id = prefix + "-" + (1001 + i);
+  const slot = document.createElement("div");
+  slot.className = "slot";
+  slot.innerHTML = `<div class="pend" tabindex="0" role="button">
+    <div class="strap"></div>
+    <div class="card"><div class="in">
+      <div class="face"><div class="band"><span class="slit"></span></div><div class="av"></div><div class="name"></div><div class="role"></div>
+        <div class="codebox">${barcode(id)}<span class="pid">${id}</span></div></div>
+      <div class="face back"><h3></h3><p></p><span class="pid">${id}</span></div>
+    </div></div></div>`;
+  const el = slot.querySelector(".pend"), card = slot.querySelector(".card"), strap = slot.querySelector(".strap");
   el.setAttribute("aria-label", "Flip badge for " + o.name);
-  el.innerHTML = `<div class="clip"></div><div class="flip"><div class="inner">
-    <div class="face"><div class="hole"></div><div class="ph"></div><h2></h2><div class="role"></div><div class="co"></div></div>
-    <div class="face back"><h2></h2><p></p></div></div></div>`;
-  const front = el.querySelector(".face"), back = el.querySelector(".back");
-  front.querySelector("h2").textContent = o.name;
-  front.querySelector(".role").textContent = o.role;
-  front.querySelector(".co").textContent = CONFIG.company;
-  back.querySelector("h2").textContent = o.name;
-  back.querySelector("p").textContent = o.bio || "";
-  const ph = front.querySelector(".ph");
-  ph.className = "photo";
-  ph.textContent = o.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
-  if (o.photo) { const im = new Image(); im.className = "photo"; im.alt = o.name; im.onload = () => ph.replaceWith(im); im.src = o.photo; }
+  for (let k = 0; k < 6; k++) { strap.appendChild(document.createElement("i")); const b = document.createElement("b"); b.textContent = CONFIG.company; strap.appendChild(b); }
+  slot.querySelector(".name").textContent = o.name;
+  slot.querySelector(".role").textContent = o.role;
+  slot.querySelector(".back h3").textContent = o.name;
+  slot.querySelector(".back p").textContent = o.bio || "";
+  const av = slot.querySelector(".av");
+  av.textContent = o.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+  if (o.photo) { const im = new Image(); im.className = "av"; im.alt = o.name; im.onload = () => av.replaceWith(im); im.src = o.photo; }
 
-  const mk = (stroke, extra) => { const p = document.createElementNS(NS, "path");
-    p.setAttribute("fill", "none"); p.setAttribute("stroke", stroke); p.setAttribute("stroke-width", 18);
-    p.setAttribute("stroke-linejoin", "round"); if (extra) p.setAttribute("stroke-dasharray", extra); svg.appendChild(p); return p; };
-  const s = { i, el, flip: el.querySelector(".flip"), p1: mk("#ffcf5c"), p2: mk("rgba(0,0,0,.2)", "10 10"), drag: null, P: [], px: 0, py: 0 };
-
+  const s = { el, th: calm ? 0 : (i % 2 ? -1 : 1) * (.3 + Math.random() * .15), w: 0, drag: null };
+  const ang = e => { const r = slot.getBoundingClientRect(); return Math.atan2(r.left + r.width / 2 - e.clientX, Math.max(8, e.clientY - r.top)); };
   el.addEventListener("pointerdown", e => {
-    const r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-    const T = s.P[N], B = s.P[N + 1], ax = B.x - T.x, ay = B.y - T.y;
-    const u = Math.max(0, Math.min(1, ((x - T.x) * ax + (y - T.y) * ay) / (ax * ax + ay * ay)));
-    s.drag = { x, y, u, sx: x, sy: y, moved: 0 };
-    el.setPointerCapture(e.pointerId); el.style.zIndex = 5;
+    s.drag = { a0: ang(e), t0: s.th, sx: e.clientX, sy: e.clientY, moved: 0, tgt: s.th };
+    el.setPointerCapture(e.pointerId); slot.style.zIndex = 5;
   });
   el.addEventListener("pointermove", e => {
+    const d = s.drag; if (!d) return;
+    d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.sx, e.clientY - d.sy));
+    if (d.moved > 5) d.tgt = Math.max(-1.2, Math.min(1.2, d.t0 + ang(e) - d.a0));
+  });
+  const up = () => {
     if (!s.drag) return;
-    const r = stage.getBoundingClientRect();
-    s.drag.x = e.clientX - r.left; s.drag.y = e.clientY - r.top;
-    s.drag.moved = Math.max(s.drag.moved, Math.hypot(s.drag.x - s.drag.sx, s.drag.y - s.drag.sy));
-  });
-  const up = () => { if (!s.drag) return; if (s.drag.moved < 6) s.flip.classList.toggle("on"); s.drag = null; el.style.zIndex = ""; };
+    if (s.drag.moved <= 5) card.classList.toggle("on");
+    s.w = Math.max(-12, Math.min(12, s.w)); s.drag = null; slot.style.zIndex = "";
+  };
   el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
-  el.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); s.flip.classList.toggle("on"); s.P[N + 1].ox -= 12; }
-  });
-  stage.appendChild(el); items.push(s);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); card.classList.toggle("on"); s.w += 3; } });
+  cols.appendChild(slot); items.push(s);
 });
 
-function layout() {
-  const w = stage.clientWidth || document.documentElement.clientWidth;
-  if (W && Math.abs(w - W) < 1) return;
-  W = w;
-  const cols = W >= BW * 4 + 60 ? 4 : W >= BW * 2 + 40 ? 2 : 1;
-  rows = Math.ceil(items.length / cols);
-  stage.style.height = rows * ROW + "px";
-  svg.setAttribute("width", W); svg.setAttribute("height", rows * ROW);
-  stage.querySelectorAll(".bar").forEach(b => b.remove());
-  for (let r = 0; r < rows; r++) { const b = document.createElement("div"); b.className = "bar"; b.style.top = r * ROW - 5 + "px"; stage.appendChild(b); }
-  items.forEach((s, i) => {
-    s.px = W * ((i % cols) + .5) / cols; s.py = Math.floor(i / cols) * ROW;
-    const kick = calm ? 0 : (i % 2 ? -1 : 1) * 7;
-    s.P = [];
-    for (let k = 0; k <= N + 1; k++) {
-      const y = k <= N ? s.py + k * L : s.py + N * L + H;
-      s.P.push({ x: s.px, y, ox: s.px - kick * k / (N + 1), oy: y, w: k === 0 ? 0 : k < N ? 1 : .5 });
-    }
-  });
-}
-
-function solve(a, b, len) {
-  const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1e-6, f = (d - len) / d, ws = a.w + b.w;
-  if (!ws) return;
-  a.x += dx * f * a.w / ws; a.y += dy * f * a.w / ws; b.x -= dx * f * b.w / ws; b.y -= dy * f * b.w / ws;
-}
-
-function step() {
+let last = performance.now();
+(function tick(now) {
+  const dt = Math.max(.001, Math.min(.033, (now - last) / 1000)); last = now;
   for (const s of items) {
-    const P = s.P;
-    for (let k = 1; k < P.length; k++) {
-      const p = P[k]; let vx = (p.x - p.ox) * .997, vy = (p.y - p.oy) * .997;
-      const v = Math.hypot(vx, vy); if (v > 60) { vx *= 60 / v; vy *= 60 / v; }
-      p.ox = p.x; p.oy = p.y; p.x += vx; p.y += vy + G * DT * DT;
+    const d = s.drag;
+    if (d && d.moved > 5) { const p = s.th; s.th += (d.tgt - s.th) * Math.min(1, dt * 18); s.w = (s.th - p) / dt; }
+    else if (!d) {
+      s.w += (-11 * Math.sin(s.th) - .55 * s.w) * dt; s.th += s.w * dt;
+      if (Math.abs(s.th) < 1e-4 && Math.abs(s.w) < 1e-3) { s.th = 0; s.w = 0; }
     }
-    for (let it = 0; it < 14; it++) {
-      for (let k = 0; k < P.length - 1; k++) solve(P[k], P[k + 1], k < N ? L : H);
-      if (s.drag) {
-        const T = P[N], B = P[N + 1], u = s.drag.u, reach = N * L + H * u - 2;
-        let tx = s.drag.x - s.px, ty = s.drag.y - s.py; const dd = Math.hypot(tx, ty);
-        if (dd > reach) { tx *= reach / dd; ty *= reach / dd; }
-        const dx = (s.px + tx - (T.x + (B.x - T.x) * u)) * .5, dy = (s.py + ty - (T.y + (B.y - T.y) * u)) * .5;
-        T.x += dx * (1 - u); T.y += dy * (1 - u); B.x += dx * u; B.y += dy * u;
-      }
-    }
-    for (let k = 1; k < P.length; k++) {
-      P[k].x = Math.max(10, Math.min(W - 10, P[k].x));
-      P[k].y = Math.min(rows * ROW - 10, P[k].y);
-    }
+    s.el.style.transform = `rotate(${s.th}rad)`;
   }
-}
-
-function draw() {
-  for (const s of items) {
-    const P = s.P, T = P[N], B = P[N + 1], a = Math.atan2(-(B.x - T.x), B.y - T.y);
-    s.el.style.transform = `translate(${T.x - BW / 2}px,${T.y}px) rotate(${a}rad)`;
-    const d = P.slice(0, N + 1).map((p, k) => (k ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1)).join("");
-    s.p1.setAttribute("d", d); s.p2.setAttribute("d", d);
-  }
-}
-
-let acc = 0, last = performance.now();
-function tick(now) {
-  acc += Math.min(.05, (now - last) / 1000); last = now;
-  while (acc >= DT) { step(); acc -= DT; }
-  draw(); requestAnimationFrame(tick);
-}
-layout(); addEventListener("resize", layout); addEventListener("load", layout);
-if (window.ResizeObserver) new ResizeObserver(layout).observe(stage);
-requestAnimationFrame(tick);
+  requestAnimationFrame(tick);
+})(performance.now());
 </script>
 </body>
 </html>
